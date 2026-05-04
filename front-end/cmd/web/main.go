@@ -8,12 +8,14 @@ import (
 )
 
 func main() {
+	port := "80"
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		render(w, "test.page.gohtml")
 	})
 
-	log.Println("Server listening on port 80")
-	if err := http.ListenAndServe(":80", nil); err != nil {
+	log.Printf("Server listening on port %s\n", port)
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), nil); err != nil {
 		log.Panic(err)
 	}
 
