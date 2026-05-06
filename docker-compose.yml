@@ -1,3 +1,4 @@
+
 services:
 
   front-end:
@@ -7,6 +8,14 @@ services:
     restart: always
     ports:
       - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+
+  broker:
+    build:
+      context: ./broker
+      dockerfile: ./broker.dockerfile
+    restart: always
+    ports:
+      - "${BROKER_PORT}:${BROKER_PORT}"
     deploy:
       mode: replicated
       replicas: 1
