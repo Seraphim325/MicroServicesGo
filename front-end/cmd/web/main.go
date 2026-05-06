@@ -5,10 +5,15 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	port := "80"
+	loadConfig()
+	port := os.Getenv("FRONTEND_PORT")
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		render(w, "test.page.gohtml")
@@ -21,13 +26,27 @@ func main() {
 
 }
 
+func loadConfig() {
+	if err := godotenv.Load(".env"); err != nil {
+		log.Panic(err)
+	}
+}
+
 func render(w http.ResponseWriter, t string) {
+	execPath, err := os.Executable()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	baseDir := filepath.Dir(execPath)
+	templateDir := filepath.Join(baseDir, "templates")
 
 	templateSlices := []string{
-		fmt.Sprintf("./templates/%s", t),
-		"./templates/base.layout.gohtml",
-		"./templates/footer.partial.gohtml",
-		"./templates/header.partial.gohtml",
+		filepath.Join(templateDir, t),
+		filepath.Join(templateDir, "base.layout.gohtml"),
+		filepath.Join(templateDir, "footer.partial.gohtml"),
+		filepath.Join(templateDir, "header.partial.gohtml"),
 	}
 
 	tmpl, err := template.ParseFiles(templateSlices...)
