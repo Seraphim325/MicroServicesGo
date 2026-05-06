@@ -1,0 +1,15 @@
+
+services:
+
+  broker:
+    build:
+      context: ./broker
+      dockerfile: ./broker.dockerfile
+    env_file:
+      - ./broker/.env
+    restart: always
+    ports:
+      - "${BROKER_PORT}:${BROKER_PORT}"
+    deploy:
+      mode: replicated
+      replicas: 1
