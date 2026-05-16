@@ -1,8 +1,8 @@
 package handler
 
 import (
+	"broker/cmd/api/helper"
 	"broker/cmd/api/model"
-	"encoding/json"
 	"net/http"
 )
 
@@ -15,9 +15,5 @@ func (b *Broker) Handler(w http.ResponseWriter, r *http.Request) {
 		Error:   false,
 	}
 
-	out, _ := json.MarshalIndent(payload, "", "\t")
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusAccepted)
-	w.Write(out)
+	_ = helper.WriteJson(w, http.StatusAccepted, payload)
 }
